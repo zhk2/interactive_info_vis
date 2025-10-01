@@ -5,7 +5,7 @@ let designWidth = 400;
 let designHeight= 400;
 let horizon ;
 function setup() {
-  createCanvas(designWidth,designHeight);
+  createCanvas(windowWidth,windowHeight);
   horizon =height/2;
 }
 
@@ -31,7 +31,7 @@ function draw() {
   rect(width/4, shapeHeight, width/2);
   textSize(20);
   fill("black");
-  text('Hi! My name is...', currentWidth/2, shapeHeight/2);
+  text('Hi! My name is Katelyn', currentWidth/2, shapeHeight/2);
   
 
 
