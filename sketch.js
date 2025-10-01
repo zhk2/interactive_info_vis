@@ -1,8 +1,8 @@
 //custom variables for y-coordinate of sun & horizon
 let shapeHeight;
 
-let designWidth = 400;
-let designHeight= 400;
+let designWidth = 4000;
+let designHeight= 4000;
 let horizon ;
 function setup() {
   createCanvas(designWidth,designHeight);
@@ -19,29 +19,29 @@ function draw() {
 
   //with if-else statement
   if (shapeHeight < horizon) {
-    background("lightblue"); // blue if above horizon
+    background("grey"); // blue if above horizon
     
   } else {
-    background("grey"); // grey if below horizon
+    background("lightblue"); // grey if below horizon
   }
 
   //sun
-  fill("white");
+  fill("orange");
   
   rect(width/4, shapeHeight, width/2);
   textSize(20);
-  fill("black");
-  text('Hi! My name is...', currentWidth/2, shapeHeight/2);
+  fill("white");
+  text('Hi! My name is Zain', currentWidth/2, shapeHeight/2);
   
 
 
   // draw line for horizon
-  stroke('lavender');
+  stroke('cyan');
   line(0,horizon,width,horizon);
 
   //grass
 
-  fill("lavender");
+  fill("cyan");
 
   rect(0, horizon, width, height);
 
