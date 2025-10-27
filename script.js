@@ -25,6 +25,7 @@ const SKETCH_SCRIPT_BY_ID = {
     sk14: 'sketches/sketch14.js',
 };
 
+
 // Default sketch selection logic:
 // 1) URL query `?tab=sk3` or `?tab=tab3` will select that tab on load
 // 2) or set `window.DEFAULT_SKETCH = 'sk2'` in the page before this script to choose a default
@@ -33,7 +34,7 @@ function getDefaultButton(buttons) {
     const params = new URLSearchParams(window.location.search);
     const tabParam = params.get('tab') || params.get('sketch');
     if (tabParam) {
-        // match by dataset.sketch or dataset.target
+        // match by dataset.sketch or dataset.targetå√
         const bySketch = Array.from(buttons).find(b => b.dataset.sketch === tabParam);
         if (bySketch) return bySketch;
         const byTarget = Array.from(buttons).find(b => b.dataset.target === tabParam);
