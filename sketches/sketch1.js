@@ -1,7 +1,7 @@
 registerSketch('sk1', function (p) {
   const PETALS = 12;
   let cx, cy, R, rInner, rOuter;
-  const breathPeriod = 10;
+  let breathPeriod = 10;
 
   p.setup = function () {
     p.createCanvas(p.windowWidth, p.windowHeight);
@@ -19,11 +19,17 @@ registerSketch('sk1', function (p) {
     drawCenterDisk();
     drawBreathPulse();
     p.pop();
+    drawHUD(t);
   };
 
   p.windowResized = function () {
     p.resizeCanvas(p.windowWidth, p.windowHeight);
     recalc();
+  };
+
+  p.mouseWheel = function (e) {
+    const delta = e.delta > 0 ? 0.5 : -0.5;
+    breathPeriod = p.constrain(breathPeriod + delta, 4, 12);
   };
 
   function recalc() {
@@ -76,37 +82,56 @@ registerSketch('sk1', function (p) {
 
   function drawPetals(minSmooth, secSmooth) {
     const current = Math.floor(minSmooth) % PETALS;
+    const minuteFrac = minSmooth % 1;
     const sweepA = p.map(secSmooth, 0, 60, 0, p.TWO_PI);
     for (let i = 0; i < PETALS; i++) {
       const a = (p.TWO_PI * i) / PETALS;
-      const bloom = i <= current ? 1 : 0.4;
-      const col = p.lerpColor(p.color(135, 110, 40), p.color(240, 195, 30), bloom);
+      const isCurrent = i === current;
+      const bloom = isCurrent ? p.lerp(0.55, 1.0, easeInOut(minuteFrac)) : (i < current ? 1 : 0.4);
+      let col = p.lerpColor(p.color(135, 110, 40), p.color(240, 195, 30), bloom);
+      const d = angleDiff(sweepA, a);
+      const sweepBoost = p.map(p.constrain(Math.abs(d), 0, p.TWO_PI / PETALS), 0, p.TWO_PI / PETALS, 0.35, 0);
+      col = p.lerpColor(col, p.color(255, 230, 120), sweepBoost);
+      const distMouse = p.dist(p.mouseX, p.mouseY, cx, cy);
+      const inRing = distMouse > rInner * 0.9 && distMouse < rOuter * 1.05;
+      const outlineW = (isCurrent && inRing) ? 3 : 1.6;
       p.push();
       p.rotate(a);
       p.noStroke();
       p.fill(col);
       drawPetalShape(rInner, rOuter, R * 0.12);
-      p.stroke(40, 28, 16, 180);
-      p.strokeWeight(1.5);
       p.noFill();
+      p.stroke(40, 28, 16, 180);
+      p.strokeWeight(outlineW);
       drawPetalShape(rInner, rOuter, R * 0.12);
       p.pop();
     }
   }
 
   function drawCenterDisk() {
+    p.noFill();
+    p.stroke(255, 90);
+    p.strokeWeight(6);
+    p.circle(0, 0, rInner * 1.08);
+    p.stroke(255, 60);
+    p.strokeWeight(2);
+    p.circle(0, 0, rInner * 1.24);
     p.noStroke();
     p.fill(40, 28, 16);
-    p.circle(0, 0, rInner * 1.08);
+    p.circle(0, 0, rInner * 0.9);
   }
 
   function drawBreathPulse() {
     const t = (p.millis() / 1000) / breathPeriod;
-    const wave = 1 - Math.abs(2 * (t - Math.floor(t + 0.5))); // triangle 0–1–0
+    const wave = triangle01(frac(t));
     const r = p.map(wave, 0, 1, rInner * 0.45, rInner * 0.7);
     p.noFill();
     p.stroke(255, 240);
+    p.strokeWeight(1.5);
     p.circle(0, 0, r * 2);
+    p.noStroke();
+    p.fill(255, 255, 255, 18);
+    p.circle(0, 0, r * 2.5);
   }
 
   function drawPetalShape(r1, r2, w) {
@@ -126,4 +151,31 @@ registerSketch('sk1', function (p) {
     }
     p.endShape(p.CLOSE);
   }
+
+  function drawHUD(t) {
+    p.push();
+    p.noStroke();
+    p.fill(30, 50);
+    p.rect(10, 10, 148, 46, 6);
+    p.fill(20);
+    p.textAlign(p.LEFT, p.TOP);
+    p.textSize(12);
+    const hh = String(new Date().getHours()).padStart(2, '0');
+    const mm = String(Math.floor(t.m)).padStart(2, '0');
+    const ss = String(Math.floor(t.s)).padStart(2, '0');
+    p.text(`Time ${hh}:${mm}:${ss}`, 18, 16);
+    p.text(`Breath ${breathPeriod.toFixed(1)}s`, 18, 32);
+    p.pop();
+  }
+
+  function angleDiff(a, b) {
+    let d = a - b;
+    while (d > p.PI) d -= p.TWO_PI;
+    while (d < -p.PI) d += p.TWO_PI;
+    return d;
+  }
+
+  function frac(x) { return x - Math.floor(x); }
+  function triangle01(t) { return 1 - Math.abs(2 * (t - Math.floor(t + 0.5))); }
+  function easeInOut(x) { return -(Math.cos(p.PI * x) - 1) / 2; }
 });
