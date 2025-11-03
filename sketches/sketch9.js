@@ -6,7 +6,7 @@ registerSketch('sk9', function (p) {
   let minPrice = 0, maxPrice = 1;
 
   let spin = 0;
-  let spinSpeed = 0.18;
+  let spinSpeed = 0.22;
   let paused = false;
 
   let cx = 0, cy = 0, R = 260;
@@ -69,14 +69,14 @@ registerSketch('sk9', function (p) {
 
       const yr = years[i];
       let col;
-      if (yr <= 2019) col = p.color(80, 170, 255, 225);
-      else if (yr === 2020) col = p.color(255, 210, 100, 235);
-      else if (yr === 2021) col = p.color(255, 140, 120, 235);
-      else col = p.color(255, 90, 90, 240);
+      if (yr <= 2019) col = p.color(78, 168, 255, 235);
+      else if (yr === 2020) col = p.color(255, 210, 100, 240);
+      else if (yr === 2021) col = p.color(255, 140, 120, 240);
+      else col = p.color(255, 90, 90, 245);
 
       p.noStroke();
       p.fill(col);
-      p.circle(x, y, 8);
+      p.circle(x, y, 9);
 
       const mx = p.mouseX - cx;
       const my = p.mouseY - cy;
@@ -89,7 +89,7 @@ registerSketch('sk9', function (p) {
 
     p.fill(255);
     p.textSize(18);
-    p.text('Global Food Price Time Wheel 2018 to 2022  Iteration 3', 0, -R * 1.8);
+    p.text('Global Food Price Time Wheel 2018 to 2022', 0, -R * 1.85);
 
     drawLegend();
 
@@ -106,7 +106,7 @@ registerSketch('sk9', function (p) {
 
     p.fill(210);
     p.textSize(12);
-    p.text('Space to pause or play   Up or Down to change speed', 0, R * 1.55);
+    p.text('Space to pause or play   Up or Down to change speed', 0, R * 1.56);
   };
 
   p.keyPressed = function () {
@@ -128,7 +128,7 @@ registerSketch('sk9', function (p) {
 
   function drawLegend() {
     const items = [
-      { c: p.color(80, 170, 255), label: '2018 to 2019' },
+      { c: p.color(78, 168, 255), label: '2018 to 2019' },
       { c: p.color(255, 210, 100), label: '2020' },
       { c: p.color(255, 140, 120), label: '2021' },
       { c: p.color(255, 90, 90),   label: '2022' }
@@ -137,7 +137,7 @@ registerSketch('sk9', function (p) {
     let total = 0;
     for (const it of items) total += p.textWidth(it.label) + 26;
     let x = -total / 2;
-    const y = -R * 1.58;
+    const y = -R * 1.6;
     for (const it of items) {
       p.noStroke();
       p.fill(it.c);
